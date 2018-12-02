@@ -1,0 +1,6 @@
+[package]
+name = "day20"
+version = "0.1.0"
+authors = ["Andreas Kostecka <kosteckaan@stud.sbg.ac.at>"]
+
+[dependencies]
