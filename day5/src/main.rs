@@ -17,64 +17,66 @@ fn open_input_file() -> BufReader<File> {
     return BufReader::new(file);
 }
 
-// One
-fn unit_reaction(l: &String) -> Option<String> {
+// One unit reaction for the whole line
+fn unit_reaction(l: &String) -> bool {
     let mut l_iter = l.chars();
-    let mut s: String = String::with_capacity(l.capacity);
     let mut first = l_iter.next();
+    let mut no_reaction_found = true;
     if first != None {
         loop {
             let mut second = l_iter.next();
             if second != None {
-                // Do the comparison
-                // Wenn first und second selber char sind und dennoch unterschiedlich => erhoehe i+1 und ein next mehr
-                // else: first = second
-                if first.unwrap().to_ascii_lowercase() == second.unwrap().to_ascii_lowercase()
+                //Example: cC, then if both are equal as uppercase then CC or cc will be selected too
+                //Thus compare the non uppercased chars too. If they are different then the situation is cC or Cc, not cc or CC
+                //But why does this evaluate for everything?
+                if first.unwrap().to_ascii_uppercase() == second.unwrap().to_ascii_uppercase()
                     && first.unwrap() != second.unwrap()
                 {
                     first = l_iter.next();
+                    println!("Dropping {}{}", first.unwrap(), second.unwrap());
+                    println!(
+                        "Uppercase {}{}",
+                        first.unwrap().to_ascii_uppercase(),
+                        second.unwrap().to_ascii_uppercase()
+                    );
+                    println!(
+                        "Compare 1: {}",
+                        (first.unwrap().to_ascii_uppercase()
+                            == second.unwrap().to_ascii_uppercase())
+                    );
+                    println!("Compare 2: {}", first.unwrap() != second.unwrap());
+                    println!(
+                        "Complete compare: {}",
+                        (first.unwrap().to_ascii_uppercase()
+                            == second.unwrap().to_ascii_uppercase())
+                            && first.unwrap() != second.unwrap()
+                    );
                     no_reaction_found = false;
+                    println!(
+                        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+                    );
                 } else {
-                    s.push(first.unwrap());
                     first = second;
                 }
             } else {
                 // reached the end
-                s.push(first.unwrap());
                 break;
             }
         }
-        return s;
     }
-    None
+    no_reaction_found
 }
 fn main() {
     let buf_reader = open_input_file();
 
     for (nr, line) in buf_reader.lines().enumerate() {
         let mut l = line.unwrap();
-        let mut s: String = String::with_capacity(l.capacity());
 
-        let mut l_iter = l.chars();
-        //First iteration
-        let mut first = l_iter.next();
-
-        if first != None {
-            let mut no_reaction_found = false;
-            while !no_reaction_found {
-                no_reaction_found = true;
-
-                if !no_reaction_found {
-                    let mut l = String::with_capacity(s.capacity());
-                    l.push_str(&s.as_str());
-                    let mut l_iter = l.chars();
-                    s = String::with_capacity(l.capacity());
-                }
-            }
-        } else {
-            println!("Empty string! {}", &l);
+        let mut no_reaction_found = false;
+        while !no_reaction_found {
+            no_reaction_found = unit_reaction(&mut l);
         }
 
-        println!("Line {}: {}", nr, s);
+        println!("Line {}: {}", nr, l.replace("*", ""));
     }
 }
