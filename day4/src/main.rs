@@ -330,10 +330,11 @@ fn main() {
         if guard.total_minutes_slept > g_strategy_1.total_minutes_slept {
             g_strategy_1 = guard;
         }
-        if guard.minute_counts[guard.most_often_minute as usize] > g_strategy_2.minute_counts[g_strategy_2.most_often_minute as usize] {
+        if guard.minute_counts[guard.most_often_minute as usize]
+            > g_strategy_2.minute_counts[g_strategy_2.most_often_minute as usize]
+        {
             g_strategy_2 = guard;
         }
-        
     }
     println!(
         "The guard {} sleeps most often in minute {} (total {} minutes), val: {}",
